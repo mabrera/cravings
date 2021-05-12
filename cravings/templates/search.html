@@ -1,0 +1,303 @@
+{% extends "layout.html" %}
+
+{% block desktop-body %}
+    <div>
+        <h2>Search Results</h2>
+    </div>
+    <div>
+        {% for restaurant in subcategory_restaurants %}
+            <div class="{{ restaurant.0.clean_name }}">
+                <a href="{% url 'restaurant' restaurant.0.name %}">
+                    <div class="large-card restaurant-instance" onmouseover="highlight_large_card(this)" onmouseout="unhighlight_large_card(this)">
+                        {{ restaurant.1|json_script:restaurant.0.clean_name }}
+                        <div class="clean-name">{{ restaurant.0.clean_name }}</div>
+                        <div class="card-content">
+                            <div>
+                                <img class="imgfit" src="{{ restaurant.0.image }}" alt="{{ restaurant.0.name }} Picture">
+                            </div>
+                            <div>
+                                <div><h4>{{ restaurant.0.name }}</h4></div>
+                                <div class="card-star-rating">
+                                    {% for i in '0123456789'|make_list %}
+                                        <span class="fa fa-star"></span>
+                                    {% endfor %}
+                                </div>
+                                <div class="hidden-stars">{{ restaurant.0.mean_rating }}</div>
+                                <div>{{ restaurant.0.setting }} • {{ restaurant.0.cuisine }} • {{ restaurant.0.price_range }}</div>
+                                <div>
+                                    <div class="large-card-buttons">
+                                        <div class="button"><a href="{% url 'add_review' restaurant.0.name %}">+ Review</a></div>
+                                        <div class="button crave" onclick="add_to_cravings(this, '{{ request.user.username }}', '{{ restaurant.0.name }}')"><a href="#">+ Cravings</a></div>
+                                        <div class="button uncrave" onclick="remove_from_cravings(this, '{{ request.user.username }}', '{{ restaurant.0.name }}')"><a href="#">- Cravings</a></div>
+                                        <div>
+                                            <ul class="top-level">
+                                                <li>
+                                                    <a class="button" href="#">+ Dinelist</a>
+                                                    <ul class="second-level">
+                                                        {% for dinelist in user_dinelists %}
+                                                            {% if forloop.first %}
+                                                                <li><div class="second-level-item top" onclick="add_to_dinelist('{{ restaurant.0.name }}', '{{ dinelist.name }}')">
+                                                                    <a href="#">{{ dinelist.name }}</a>
+                                                                </div></li>
+                                                            {% elif forloop.last %}
+                                                                <li><div class="second-level-item bottom" onclick="add_to_dinelist('{{ restaurant.0.name }}', '{{ dinelist.name }}')">
+                                                                    <a href="#">{{ dinelist.name }}</a>
+                                                                </div></li>
+                                                            {% else %}
+                                                                <li><div class="second-level-item" onclick="add_to_dinelist('{{ restaurant.0.name }}', '{{ dinelist.name }}')">
+                                                                    <a href="#">{{ dinelist.name }}</a>
+                                                                </div></li>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            {% if is_dinelist %}
+                                {% ifequal dinelist_user request.user %}
+                                    <div onclick="remove_from_dinelist('{{ restaurant.0.name }}', '{{ subcategory }}', '{{ restaurant.0.clean_name }}')"><a href="#">X</a></div>
+                                {% endifequal %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>    
+            </div>
+        {% endfor %}
+    </div>
+
+    <h4><a href="{% url 'search_restaurants' parsed_request %}">See all restaurant results</a></h4><br>
+
+    <div>
+        {% for subcategory in subcategorized_restaurants %}
+            <div>
+                <div><h3>
+                    <a href="{% url 'subcategory' category_link_attribute subcategory.0 %}">{{ subcategory.0 }}</a>
+                    {% if is_dinelist and not is_prof_dinelist %}
+                        by <a href="{% url 'prof_dinelists' subcategory.0.user %}">{{ subcategory.0.user }}</a>
+                    {% endif %}
+                </h3></div>
+                <div class="horizontal-scrollable">
+                    {% for restaurant in subcategory.1 %}
+                        <a href="{% url 'restaurant' restaurant.0.name %}">
+                            <div class="small-card restaurant-instance" onmouseover="highlight_small_card(this)" onmouseout="unhighlight_small_card(this)">
+                                {{ restaurant.1|json_script:restaurant.0.clean_name }}
+                                <div class="clean-name">{{ restaurant.0.clean_name }}</div>
+                                <div class="card-content">
+                                    <div><h4>{{ restaurant.0.name }}</h4></div>
+                                    <div class="card-star-rating">
+                                        {% for i in '0123456789'|make_list %}
+                                            <span class="fa fa-star"></span>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="hidden-stars">{{ restaurant.0.mean_rating }}</div>
+                                    <div>{{ restaurant.0.setting }} • {{ restaurant.0.cuisine }} • {{ restaurant.0.price_range }}</div>
+                                    <div class="hidden-image">{{ restaurant.0.image }}</div>                                    
+                                </div>
+                                <div class="card-actions">
+                                    {% if user.is_authenticated %}
+                                        <ul class="top-level">
+                                            <li>
+                                                <button><a href="#">&#8942</a></button>
+                                                <ul class="second-level">
+                                                    <li><div class="second-level-item top">
+                                                        <a href="{% url 'add_review' restaurant.0.name %}">+ Review</a>
+                                                    </div></li>
+                                                    <li class="crave" onclick="add_to_cravings(this, '{{ request.user.username }}', '{{ restaurant.0.name }}')"><div class="second-level-item">
+                                                        <a href="#">+ Cravings</a>
+                                                    </div></li>
+                                                    <li class="uncrave" onclick="remove_from_cravings(this, '{{ request.user.username }}', '{{ restaurant.0.name }}')"><div class="second-level-item">
+                                                        <a href="#">- Cravings</a>
+                                                    </div></li>
+                                                    <li>
+                                                        <div class="second-level-item bottom">
+                                                            <a href="#">+ Dinelist</a>
+                                                        </div>
+                                                        <ul class="third-level">
+                                                            {% for dinelist in user_dinelists %}
+                                                                {% if forloop.first %}
+                                                                    <li><div class="third-level-item top" onclick="add_to_dinelist('{{ restaurant.0.name }}', '{{ dinelist.name }}')">
+                                                                        <a href="#">{{ dinelist.name }}</a>
+                                                                    </div></li>
+                                                                {% elif forloop.last %}
+                                                                    <li><div class="third-level-item bottom" onclick="add_to_dinelist('{{ restaurant.0.name }}', '{{ dinelist.name }}')">
+                                                                        <a href="#">{{ dinelist.name }}</a>
+                                                                    </div></li>
+                                                                {% else %}
+                                                                    <li><div class="third-level-item" onclick="add_to_dinelist('{{ restaurant.0.name }}', '{{ dinelist.name }}')">
+                                                                        <a href="#">{{ dinelist.name }}</a>
+                                                                    </div></li>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div><br>
+        {% endfor %}
+    </div>
+
+    <h4><a href="{% url 'search_dinelists' parsed_request %}">See all dinelist results</a></h4><br>
+{% endblock %}
+
+{% block mobile-body %}
+    <div>
+        <h2>Search Results</h2>
+    </div>
+    <div>
+        {% for restaurant in subcategory_restaurants %}
+            <div class="{{ restaurant.0.clean_name }}">
+                <a href="{% url 'restaurant' restaurant.0.name %}">
+                    <div class="large-card restaurant-instance" onmouseover="highlight_large_card(this)" onmouseout="unhighlight_large_card(this)">
+                        {{ restaurant.1|json_script:restaurant.0.clean_name }}
+                        <div class="clean-name">{{ restaurant.0.clean_name }}</div>
+                        <div class="card-content">
+                            <div>
+                                <img class="imgfit" src="{{ restaurant.0.image }}" alt="{{ restaurant.0.name }} Picture">
+                            </div>
+                            <div>
+                                <div><h4>{{ restaurant.0.name }}</h4></div>
+                                <div class="card-star-rating">
+                                    {% for i in '0123456789'|make_list %}
+                                        <span class="fa fa-star"></span>
+                                    {% endfor %}
+                                </div>
+                                <div class="hidden-stars">{{ restaurant.0.mean_rating }}</div>
+                                <div>{{ restaurant.0.setting }} • {{ restaurant.0.cuisine }} • {{ restaurant.0.price_range }}</div>
+                                <div>
+                                    <div class="large-card-buttons">
+                                        <div class="button"><a href="{% url 'add_review' restaurant.0.name %}">+ Review</a></div>
+                                        <div class="button crave" onclick="add_to_cravings(this, '{{ request.user.username }}', '{{ restaurant.0.name }}')"><a href="#">+ Cravings</a></div>
+                                        <div class="button uncrave" onclick="remove_from_cravings(this, '{{ request.user.username }}', '{{ restaurant.0.name }}')"><a href="#">- Cravings</a></div>
+                                        <div>
+                                            <ul class="top-level">
+                                                <li>
+                                                    <a class="button" href="#">+ Dinelist</a>
+                                                    <ul class="second-level">
+                                                        {% for dinelist in user_dinelists %}
+                                                            {% if forloop.first %}
+                                                                <li><div class="second-level-item top" onclick="add_to_dinelist('{{ restaurant.0.name }}', '{{ dinelist.name }}')">
+                                                                    <a href="#">{{ dinelist.name }}</a>
+                                                                </div></li>
+                                                            {% elif forloop.last %}
+                                                                <li><div class="second-level-item bottom" onclick="add_to_dinelist('{{ restaurant.0.name }}', '{{ dinelist.name }}')">
+                                                                    <a href="#">{{ dinelist.name }}</a>
+                                                                </div></li>
+                                                            {% else %}
+                                                                <li><div class="second-level-item" onclick="add_to_dinelist('{{ restaurant.0.name }}', '{{ dinelist.name }}')">
+                                                                    <a href="#">{{ dinelist.name }}</a>
+                                                                </div></li>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            {% if is_dinelist %}
+                                {% ifequal dinelist_user request.user %}
+                                    <div onclick="remove_from_dinelist('{{ restaurant.0.name }}', '{{ subcategory }}', '{{ restaurant.0.clean_name }}')"><a href="#">X</a></div>
+                                {% endifequal %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>    
+            </div>
+        {% endfor %}
+    </div>
+
+    <h4><a href="{% url 'search_restaurants' parsed_request %}">See all restaurant results</a></h4><br>
+
+    <div>
+        {% for subcategory in subcategorized_restaurants %}
+            <div>
+                <div><h3>
+                    <a href="{% url 'subcategory' category_link_attribute subcategory.0 %}">{{ subcategory.0 }}</a>
+                    {% if is_dinelist and not is_prof_dinelist %}
+                        by <a href="{% url 'prof_dinelists' subcategory.0.user %}">{{ subcategory.0.user }}</a>
+                    {% endif %}
+                </h3></div>
+                <div class="horizontal-scrollable">
+                    {% for restaurant in subcategory.1 %}
+                        <a href="{% url 'restaurant' restaurant.0.name %}">
+                            <div class="small-card restaurant-instance" onmouseover="highlight_small_card(this)" onmouseout="unhighlight_small_card(this)">
+                                {{ restaurant.1|json_script:restaurant.0.clean_name }}
+                                <div class="clean-name">{{ restaurant.0.clean_name }}</div>
+                                <div class="card-content">
+                                    <div><h4>{{ restaurant.0.name }}</h4></div>
+                                    <div class="card-star-rating">
+                                        {% for i in '0123456789'|make_list %}
+                                            <span class="fa fa-star"></span>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="hidden-stars">{{ restaurant.0.mean_rating }}</div>
+                                    <div>{{ restaurant.0.setting }} • {{ restaurant.0.cuisine }} • {{ restaurant.0.price_range }}</div>
+                                    <div class="hidden-image">{{ restaurant.0.image }}</div>                                    
+                                </div>
+                                <div class="card-actions">
+                                    {% if user.is_authenticated %}
+                                        <ul class="top-level">
+                                            <li>
+                                                <button><a href="#">&#8942</a></button>
+                                                <ul class="second-level">
+                                                    <li><div class="second-level-item top">
+                                                        <a href="{% url 'add_review' restaurant.0.name %}">+ Review</a>
+                                                    </div></li>
+                                                    <li class="crave" onclick="add_to_cravings(this, '{{ request.user.username }}', '{{ restaurant.0.name }}')"><div class="second-level-item">
+                                                        <a href="#">+ Cravings</a>
+                                                    </div></li>
+                                                    <li class="uncrave" onclick="remove_from_cravings(this, '{{ request.user.username }}', '{{ restaurant.0.name }}')"><div class="second-level-item">
+                                                        <a href="#">- Cravings</a>
+                                                    </div></li>
+                                                    <li>
+                                                        <div class="second-level-item bottom">
+                                                            <a href="#">+ Dinelist</a>
+                                                        </div>
+                                                        <ul class="third-level">
+                                                            {% for dinelist in user_dinelists %}
+                                                                {% if forloop.first %}
+                                                                    <li><div class="third-level-item top" onclick="add_to_dinelist('{{ restaurant.0.name }}', '{{ dinelist.name }}')">
+                                                                        <a href="#">{{ dinelist.name }}</a>
+                                                                    </div></li>
+                                                                {% elif forloop.last %}
+                                                                    <li><div class="third-level-item bottom" onclick="add_to_dinelist('{{ restaurant.0.name }}', '{{ dinelist.name }}')">
+                                                                        <a href="#">{{ dinelist.name }}</a>
+                                                                    </div></li>
+                                                                {% else %}
+                                                                    <li><div class="third-level-item" onclick="add_to_dinelist('{{ restaurant.0.name }}', '{{ dinelist.name }}')">
+                                                                        <a href="#">{{ dinelist.name }}</a>
+                                                                    </div></li>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div><br>
+        {% endfor %}
+    </div>
+
+    <h4><a href="{% url 'search_dinelists' parsed_request %}">See all dinelist results</a></h4><br>
+{% endblock %}

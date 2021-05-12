@@ -1,0 +1,217 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}Cravings{% endblock %}</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link href="{% static 'styles.css' %}" rel="stylesheet">
+        <script src="{% static 'cravings.js' %}"></script>
+    </head>
+    <body>
+        <div id="mobile">
+            <div id="mobile-container">
+                <div class="sidebar">
+                    <div class="sidebar-content">
+                        <div class="sidebar-menu">
+                            <br>
+                            <hr>
+                            <div class="subheader">Menu</div>
+                            <div class="category-header"><a href="{% url 'category' 'setting' %}">Settings</a></div>
+                            <div class="category-header"><a href="{% url 'category' 'cuisine' %}">Cuisines</a></div>
+                            <div class="category-header"><a href="{% url 'category' 'price_range' %}">Price Ranges</a></div>
+                            <div class="category-header"><a href="{% url 'category' 'dinelist' %}">Dinelists</a></div>
+                            {% if user.is_authenticated %}
+                                <div class="mobile-new-dinelist">
+                                    <div class="category">
+                                        <div class="new-dinelist" onclick="show_new_dinelist_menu_mobile()">
+                                            <a href="#">+ New Dinelist</a>
+                                        </div>
+                                        <div class="new-dinelist-form">
+                                            <div class="header">
+                                                Give your dinelist a name
+                                            </div>
+                                            <div>
+                                                <form action="{% url 'dinelist' %}" method="POST">
+                                                    {% csrf_token %}
+                                                    <input type="text" name="dinelist_name" placeholder="Title" required="required" class="new-dinelist-name"><br>
+                                                    <button class="new-dinelist-button cancel" onclick="hide_new_dinelist_menu_mobile()">Cancel</button>
+                                                    <input type="submit" value="Create" class="new-dinelist-button create">
+                                                </form>    
+                                            </div>
+                                        </div>
+                                    </div>    
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="sidebar-session">
+                            <br>
+                            <hr>
+                            <div class="subheader">Account</div>
+                            {% if user.is_authenticated %}
+                                <div class="category-header"><a class="category-link" href="{% url 'prof_dinelists' request.user.username %}">My Dinelists</a></div>
+                                <div class="category-header"><a class="category-link" href="{% url 'cravings' request.user.username %}">My Cravings</a></div>
+                                <div class="category-header"><a href="{% url 'logout' %}">Log Out</a></div>
+                            {% else %}
+                                <div class="category-header"><a href="{% url 'login' %}">Log In</a></div>
+                                <div class="category-header"><a href="{% url 'register' %}">Register</a></div>
+                            {% endif %}
+                        </div>    
+                    </div>
+                </div>
+
+                <div class="banner">
+                    <div class="banner-button">
+                        <div>
+                            <button class="open-sidebar-button" onclick="openSidebar()">☰</button>
+                            <button class="close-sidebar-button" onclick="closeSidebar()">X</button>
+                        </div>
+                    </div>
+                    <div class="banner-search">
+                        <form action="{% url 'search' %}" method="GET">
+                            <div>
+                                <input class="search" type="text" name="q" placeholder="Search">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="mobile-body">
+                    <div class="mobile-body-content">
+                        {% block mobile-body %}
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="desktop">
+            <div id="desktop-container">
+                <div class="logo">
+                    <div class="logo-content"><strong><a href="{% url 'index' %}">Cravings</a></strong></div>
+                </div>
+
+                <div class="searchbar">
+                    <div class="searchbar-content">
+                    </div>
+                </div>
+
+                <div class="session">
+                    <div class="session-content">
+                        {% if user.is_authenticated %}
+                            <span><a href="#">Profile</a></span>
+                            <span><a href="{% url 'logout' %}">Log Out</a></span>
+                        {% else %}
+                            <span><a href="{% url 'login' %}">Log In</a></span>
+                            <span><a href="{% url 'register' %}">Register</a></span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="left-sidebar">
+                    <div class="left-sidebar-content">
+                        <form action="{% url 'search' %}" method="GET">
+                            <div>
+                                <input class="search" type="text" name="q" placeholder="Search">
+                            </div>
+                            <div class="category" >
+                                <div class="category-header">
+                                    <a class="category-link" href="{% url 'category' 'setting' %}">Settings</a>
+                                    <button class="show-button" type="button" onclick="showSubcategories(this)">&#8744</button>
+                                    <button class="hide-button" type="button" onclick="hideSubcategories(this)">&#8743</button>
+                                </div>
+                                <div class="category-scroll">
+                                    {% for setting in settings %}
+                                        <div class="subcategory">
+                                            <input type="checkbox" name="setting[]" value="{{ setting }}">
+                                            <a href="{% url 'subcategory' 'setting' setting %}">{{ setting }}</a>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="category" >
+                                <div class="category-header">
+                                    <a class="category-link" href="{% url 'category' 'cuisine' %}">Cuisines</a>
+                                    <button class="show-button" type="button" onclick="showSubcategories(this)">&#8744</button>
+                                    <button class="hide-button" type="button" onclick="hideSubcategories(this)">&#8743</button>
+                                </div>
+                                <div class="category-scroll">
+                                    {% for cuisine in cuisines %}
+                                        <div class="subcategory">
+                                            <input type="checkbox" name="cuisine[]" value="{{ cuisine }}">
+                                            <a href="{% url 'subcategory' 'cuisine' cuisine %}">{{ cuisine }}</a>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="category" >
+                                <div class="category-header">
+                                    <a class="category-link" href="{% url 'category' 'price_range' %}">Price Ranges</a>
+                                    <button class="show-button" type="button" onclick="showSubcategories(this)">&#8744</button>
+                                    <button class="hide-button" type="button" onclick="hideSubcategories(this)">&#8743</button>
+                                </div>
+                                <div class="category-scroll">
+                                    {% for price_range in price_ranges %}
+                                        <div class="subcategory">
+                                            <input type="checkbox" name="price_range[]" value="{{ price_range }}">
+                                            <a href="{% url 'subcategory' 'price_range' price_range %}">{{ price_range }}</a>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </form>
+                        <div class="category" >
+                            <div class="category-header">
+                                <a class="category-link" href="{% url 'category' 'dinelist' %}">Dinelists</a>
+                            </div>
+                        </div>
+                        {% if user.is_authenticated %}
+                            <div class="desktop-new-dinelist">
+                                <div class="category">
+                                    <div class="new-dinelist" onclick="show_new_dinelist_menu_desktop()">
+                                        <a href="#">+ New Dinelist</a>
+                                    </div>
+                                    <div class="new-dinelist-form">
+                                        <div class="header">
+                                            Give your dinelist a name
+                                        </div>
+                                        <div>
+                                            <form action="{% url 'dinelist' %}" method="POST">
+                                                {% csrf_token %}
+                                                <input type="text" name="dinelist_name" placeholder="Title" required="required" class="new-dinelist-name"><br>
+                                                <button class="new-dinelist-button cancel" onclick="hide_new_dinelist_menu_desktop()">Cancel</button>
+                                                <input type="submit" value="Create" class="new-dinelist-button create">
+                                            </form>    
+                                        </div>
+                                    </div>
+                                </div>    
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="desktop-body">
+                    <div class="content-scroll">
+                        {% block desktop-body %}
+                        {% endblock %}
+                    </div>
+                </div>
+
+                <div class="right-sidebar">
+                    <div class="right-sidebar-content">
+                        <div class="category">
+                                {% if user.is_authenticated %}
+                                <div class="category-header">
+                                    <a class="category-link" href="{% url 'cravings' request.user.username %}">My Cravings</a>
+                                </div>
+                                <div class="category-header">
+                                    <a class="category-link" href="{% url 'prof_dinelists' request.user.username %}">My Dinelists</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

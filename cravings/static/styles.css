@@ -1,0 +1,814 @@
+/*----------------------------------------------------------------*/
+/*----------------------- Global Formatting ----------------------*/
+/*----------------------------------------------------------------*/
+
+/*--------------------------- Hyperlinks -------------------------*/
+
+a {
+    text-decoration: none !important;
+}
+
+.button:focus {
+    outline: none;
+}
+
+/*--------------------------- Scrollbars -------------------------*/
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #d1d1d1;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #b8b8b8;
+}
+
+/*----------------------------------------------------------------*/
+/*--------------- Mobile vs Desktop Responsiveness ---------------*/
+/*----------------------------------------------------------------*/
+
+@media only screen and (hover: none) {
+    #desktop {
+        display: none;
+    }
+}
+  
+@media only screen and (hover: hover) {
+    #mobile {
+        display: none;
+    }
+}
+
+/*----------------------------------------------------------------*/
+/*---------------------------- Desktop ---------------------------*/
+/*----------------------------------------------------------------*/
+
+/*-------------------------- Grid Layout -------------------------*/
+
+#desktop-container {
+    display: grid;
+    grid-template-rows: 70px calc(100vh - 70px);
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+        "logo           searchbar       session"
+        "left-sidebar   desktop-body    right-sidebar";
+}
+
+#desktop-container .logo {
+    grid-area: logo;
+    background-color: #670000;
+}
+
+#desktop-container .searchbar {
+    grid-area: searchbar;
+    background-color: #670000;
+    text-align: center;
+}
+
+#desktop-container .session {
+    grid-area: session;
+    background-color: #670000;
+    text-align: center;
+}
+
+#desktop-container .left-sidebar {
+    grid-area: left-sidebar;
+}
+
+#desktop-container .desktop-body {
+    grid-area: desktop-body;
+    overflow: auto;
+    min-width: 700px;
+}
+
+#desktop-container .right-sidebar {
+    grid-area: right-sidebar;
+}
+
+.desktop-body .content-scroll {
+    padding: 10px;
+}
+
+/*--------------------------- Top Banner -------------------------*/
+
+.logo-content {
+    width: 250px;
+    color: white;
+    font-size: 40px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.logo-content a {
+    color: white !important;
+}
+
+.session-content {
+    width: 250px;
+    color: white;
+    font-size: 20px;
+    margin-top: 20px;
+}
+
+.session-content span {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.session-content a {
+    color: white !important;
+}
+
+/*------------------------- Left Sidebar -------------------------*/
+
+.left-sidebar-content {
+    width: 200px;
+    padding-left: 10px;
+}
+
+.left-sidebar-content a {
+    color: black !important;
+}
+
+.left-sidebar .search {
+    width: 230px;
+    height: 40px;
+    border: 2px solid #670000;
+    border-radius: 10px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+.search:hover {
+    box-shadow: 0px 0px 10px #dfe1e5;
+}
+
+input:focus {
+    outline: none;
+}
+
+.left-sidebar-content .category .category-link {
+    font-size: x-large;
+}
+
+.show-button {
+    background-color: white;
+    border: none;
+}
+
+.hide-button {
+    display: none;
+    background-color: white;
+    border: none;
+}
+
+.left-sidebar-content .category-scroll {
+    height: 0px;
+    overflow: scroll;
+    transition: 1s;
+}
+
+.left-sidebar-content .subcategory {
+    padding-left: 20px;
+}
+
+.desktop-new-dinelist .new-dinelist {
+    font-size: larger;
+}
+
+.desktop-new-dinelist .new-dinelist-form {
+    height: 0;
+    width: 230px;
+    margin-top: 10px;
+    text-align: center;
+    background-color: #fff0f0;
+    border-radius: 5px;
+    overflow: hidden;
+    transition-duration: 1s;
+}
+
+.desktop-new-dinelist .new-dinelist-form .header {
+    font-size: large;
+    margin-top: 5px;
+}
+
+.desktop-new-dinelist .new-dinelist-name {
+    font-size: x-large;
+    text-align: center;
+    width: 205px;
+    border: none;
+    border-bottom: 1px solid black;
+    margin-bottom: 10px;
+    background-color: #fff0f0;
+}
+
+.desktop-new-dinelist .new-dinelist-button {
+    border: none;
+    padding-bottom: 10px;
+    background-color: #fff0f0;
+}
+
+.cancel:focus {
+    outline: none;
+}
+
+.create {
+    color: green;
+}
+
+/*------------------------- Right Sidebar -------------------------*/
+
+.right-sidebar-content {
+    width: 200px;
+    padding-left: 10px;
+    padding-top: 10px;
+}
+
+.right-sidebar-content a {
+    color: black !important;
+}
+
+/* .right-sidebar-content .category-header {
+    margin-bottom: 5px;
+} */
+
+.right-sidebar-content .category .category-link {
+    font-size: x-large;
+}
+
+/*-------------------- General Body Formatting --------------------*/
+
+.desktop-body a {
+    color: black !important;
+}
+
+.clean-name {
+    display: none;
+}
+
+/*-------------------- Small Restaurant Cards --------------------*/
+
+.horizontal-scrollable {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
+
+.horizontal-scrollable::-webkit-scrollbar {
+    display: none;
+}
+
+.horizontal-scrollable .small-card {
+    display: inline-block;
+    width: 350px;
+    height: 200px;
+    background-size: cover;
+    border: 1px solid #b8b8b8;
+    border-radius: 5px;
+    color: black !important;
+}
+
+.hidden-image, .hidden-stars {
+    display: none;
+}
+
+.small-card .card-content {
+    width: 92%;
+    height: 200px;
+    float: left;
+}
+
+.small-card .card-actions {
+    margin-left: 92%;
+}
+
+.small-card .card-actions button {
+    background: none;
+    border: none;
+    text-shadow: 0px 0px 5px black;
+    font-size: 25px;
+    font-weight: 900;
+    visibility: hidden;
+}
+
+.small-card .card-actions button a {
+    color: #670000 !important;
+}
+
+.mini-menu {
+    margin-left: -57px;
+    min-width: 86px;
+    position: absolute;
+    display: none;
+    padding: 5px;
+    background-color: #670000;
+    border-radius: 5px;
+    opacity: 0.8;
+}
+
+.mini-menu a {
+    color: white !important;
+}
+
+ul {
+    list-style-type: none;
+    display: block;
+}
+
+.top-level li:hover > ul {
+    visibility: visible;
+}
+
+.card-actions .top-level {
+    position: relative;
+    margin-left: -32px;
+}
+
+.card-actions .top-level a {
+    color: white !important;
+}
+
+.card-actions .second-level {
+    position: absolute;
+    margin-left: -106px;
+    visibility: hidden;
+}
+
+.card-actions .second-level-item {
+    width: 86px;
+    padding-left: 5px;
+    background-color: #670000;
+    opacity: 0.9;
+}
+
+.card-actions .third-level {
+    max-height: 96px;
+    margin-top: -24px;
+    /* margin-left: -160px; */
+    margin-left: 46px;
+    overflow-y: scroll;
+    visibility: hidden;
+}
+
+.card-actions .third-level-item {
+    padding-left: 5px;
+    padding-right: 5px;
+    background-color: #670000;
+    opacity: 0.9;
+}
+
+.card-actions .top {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.card-actions .bottom {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+/*-------------------- Large Restaurant Cards --------------------*/
+
+.large-card {
+    border: 1px solid;
+    border-radius: 5px;
+    border-color: #dddddd;
+    padding: 20px;
+    text-align: left;
+    height: 240px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.large-card .card-content {
+    display: grid;
+    grid-template-columns: 310px 1fr auto;
+    width: 98%;
+    height: 200px;
+    float: left;
+    color: black !important;
+    overflow: hidden;
+}
+
+.large-card .card-actions {
+    margin-left: 98%;
+}
+
+.large-card .card-actions div {
+    /* border: 1px solid black; */
+    background-color: white;
+    text-align: center;
+}
+
+.large-card .card-actions div a {
+    font-weight: 700;
+    color: #670000 !important;
+}
+
+.imgfit {
+    width: 300px;
+    height: 200px;
+    object-fit: cover;
+}
+
+.large-card-buttons {
+    position: relative;
+}
+
+.large-card-buttons a {
+    color: white !important;
+}
+
+.large-card-buttons .button {
+    width: 80px;
+    float: left;
+    margin-right: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: #670000;
+    box-shadow: 0px 0px 5px black;
+    text-align: center;
+}
+
+.large-card-buttons .top-level {
+    position: relative;
+}
+
+.large-card-buttons .top-level a {
+    color: white !important;
+}
+
+.large-card-buttons .second-level {
+    position: absolute;
+    max-height: 100px;
+    margin-left: 173px;
+    overflow-y: scroll;
+    visibility: hidden;
+}
+
+.large-card-buttons .second-level-item {
+    padding-left: 5px;
+    padding-right: 5px;
+    background-color: #670000;
+    color: white;
+}
+
+.large-card-buttons .top {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.large-card-buttons .bottom {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+/*----------------------- Card Star Ratings ----------------------*/
+
+.card-star-rating {
+    color: white;
+    text-shadow: 0px 0px 5px black;
+}
+
+.checked {
+    color: #670000;
+}
+
+/*------------------------ Restaurant View -----------------------*/
+
+.restaurant-header {
+    position: relative;
+}
+
+.restaurant-header a {
+    color: white !important;
+}
+
+.restaurant-header .background {
+    position: absolute;
+    overflow: hidden;
+    white-space: nowrap;
+    z-index: -1;
+    margin: -10px;
+}
+
+.restaurant-header .background img {
+    display: inline-block;
+    margin-right: -5px;
+    height: 350px;
+    max-width: 200px;
+    object-fit: cover;
+    opacity: 0.7
+}
+
+.restaurant-header .foreground {
+    position: absolute;
+    margin-top: 100px;
+    width: 600px;
+}
+
+.restaurant-header .foreground .title {
+    color: white;
+    font-size: 60px;
+    font-weight: 600;
+    text-shadow: 0px 0px 40px black;
+}
+
+.restaurant-header .foreground .categories, .restaurant-star-rating {
+    color: white;
+    font-size: 30px;
+    font-weight: 500;
+    text-shadow: 0px 0px 20px black;
+}
+
+.restaurant-content, .reviews-content, .add-review-content {
+    margin-top: 350px;
+}
+
+.review-star-rating {
+    color: white;
+    text-shadow: 0px 0px 5px black;
+}
+
+.restaurant-buttons .button {
+    width: 120px;
+    float: left;
+    margin-right: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: #670000;
+    box-shadow: 0px 0px 5px black;
+    text-align: center;
+}
+
+.restaurant-buttons .uncrave {
+    width: 180px;
+}
+
+.restaurant-buttons .crave {
+    width: 135px;
+}
+
+.restaurant-buttons .top-level {
+    position: relative;
+}
+
+.restaurant-buttons .top-level a {
+    color: white !important;
+}
+
+.restaurant-buttons .second-level {
+    position: absolute;
+    max-height: 100px;
+    overflow-y: scroll;
+    visibility: hidden;
+}
+
+.restaurant-buttons .craved {
+    margin-left: 353px;
+}
+
+.restaurant-buttons .uncraved {
+    margin-left: 308px;
+}
+
+.restaurant-buttons .second-level-item {
+    padding-left: 5px;
+    padding-right: 5px;
+    background-color: #670000;
+    color: white;
+}
+
+.restaurant-buttons .top {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.restaurant-buttons .bottom {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.rating {
+    width: 270px;
+    unicode-bidi: bidi-override;
+    direction: rtl;
+    text-align: center;
+    position: relative;
+    font-size: x-large;
+}
+
+.rating .hide {
+    display: none;
+}
+
+.rating > label {
+    float: right;
+    display: inline;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    width: 1.1em;
+    cursor: pointer;
+    color: #000;
+}
+
+.rating > label:hover,
+.rating > label:hover ~ label,
+.rating > input.radio-btn:checked ~ label {
+    color: transparent;
+}
+
+.rating > label:hover:before,
+.rating > label:hover ~ label:before,
+.rating > input.radio-btn:checked ~ label:before,
+.rating > input.radio-btn:checked ~ label:before {
+    content: "\2605";
+    position: absolute;
+    left: 0;
+    color: #670000;
+}
+
+/*----------------------------------------------------------------*/
+/*----------------------------- Mobile ---------------------------*/
+/*----------------------------------------------------------------*/
+
+/*--------------------------- Grid Layout ------------------------*/
+
+#mobile-container {
+    display: grid;
+    grid-template-rows: 5vh 95vh;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+        "sidebar        banner"
+        "sidebar        mobile-body";
+}
+
+#mobile-container .sidebar {
+    grid-area: sidebar;
+    background-color: #fff7f7;
+    overflow-x: hidden;
+    transition: 1s;
+    z-index: 1;
+}
+
+#mobile-container .banner {
+    grid-area: banner;
+    background-color: #670000;
+}
+
+#mobile-container .mobile-body {
+    grid-area: mobile-body;
+}
+
+/*------------------------------ Banner --------------------------*/
+
+.banner {
+    position: relative;
+    transition: 1s;
+}
+
+.banner .banner-button {
+    position: absolute;
+    width: 30px;
+    margin-top: 1vh;
+    font-size: 2vh;
+    font-weight: 700;
+}
+
+.banner .banner-button button {
+    background: none;
+    color: white;
+    border: none;
+    outline: none;
+}
+
+.banner-search {
+    margin-left: 30px;
+    text-align: center;
+}
+
+.banner-search .search {
+    width: 80%;
+    height: 3vh;
+    border: 2px solid #670000;
+    border-radius: 10px;
+    margin-top: 1vh;
+    font-size: 2vh;
+}
+
+/*----------------------------- Sidebar --------------------------*/
+
+.sidebar-content {
+    padding: 40px;
+    white-space: nowrap;
+}
+
+.sidebar-content a {
+    color: black !important;
+}
+
+.sidebar-content .subheader {
+    margin-top: -10px;
+    margin-bottom: 20px;
+    font-size: 1.5vh;
+}
+
+.sidebar-content .category-header {
+    font-size: 2.5vh;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.mobile-new-dinelist .new-dinelist {
+    font-size: 2vh;
+}
+
+.mobile-new-dinelist .new-dinelist-form {
+    height: 0;
+    width: calc(60vw - 80px);
+    margin-top: 10px;
+    text-align: center;
+    background-color: #fff0f0;
+    border-radius: 5px;
+    overflow: hidden;
+    transition-duration: 1s;
+}
+
+.mobile-new-dinelist .new-dinelist-form .header {
+    font-size: 1.8vh;
+    margin-top: 5px;
+}
+
+.mobile-new-dinelist .new-dinelist-name {
+    font-size: 2vh;
+    text-align: center;
+    width: calc(60vw - 100px);
+    border: none;
+    border-bottom: 1px solid black;
+    margin-bottom: 10px;
+    background-color: #fff0f0;
+}
+
+.mobile-new-dinelist .new-dinelist-button {
+    border: none;
+    padding-bottom: 10px;
+    background-color: #fff0f0;
+    font-size: 1.6vh;
+}
+
+/*----------------------------- Body ------------------------------*/
+
+.mobile-body {
+    overflow-x: hidden;
+    transition: 1s;
+}
+
+.mobile-body-content {
+    white-space: nowrap;
+    padding: 1vh;
+    font-size: 1.8vw;
+}
+
+.mobile-body-content a {
+    color: black !important;
+}
+
+.mobile-body-content .restaurant-buttons a {
+    color: white !important;
+}
+
+.mobile-body-content .large-card-buttons a {
+    color: white !important;
+}
+
+.mobile-body-content h2 {
+    font-size: 3vh;
+}
+
+.mobile-body-content h3 {
+    font-size: 2.5vh;
+}
+
+.mobile-body-content h4 {
+    font-size: 2vh;
+}
+
+.mobile-body-content .session-text {
+    font-size: 2vh;
+}
+
+.mobile-body-content .form-control {
+    font-size: 2vh;
+}
+
+.mobile-body-content .btn-primary {
+    font-size: 2vh;
+}
+
+.text-wrap {
+    white-space: normal;
+}

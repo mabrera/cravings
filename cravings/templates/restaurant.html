@@ -1,0 +1,443 @@
+{% extends "layout.html" %}
+
+{% block desktop-body %}
+    <div class="restaurant-header">
+        <div class="background">
+            {% for image in banner_images %}
+                <img src="{{ image.image_url }}" alt="">
+            {% endfor %}
+        </div>
+        <div class="foreground">
+            <div class="title">
+                <a href="{% url 'restaurant' restaurant.name %}">{{ restaurant.name }}</a>
+            </div>
+            <div class="restaurant-star-rating">
+                {% for i in '0123456789'|make_list %}
+                    <span class="fa fa-star"></span>
+                {% endfor %}
+            </div>
+            <div class="hidden-stars">{{ restaurant.mean_rating }}</div>
+            <div class="categories">
+                {{ restaurant.setting }} • {{ restaurant.cuisine }} • {{ restaurant.price_range }}
+            </div>
+            {% if is_review %}
+            {% else %}
+                {% if user.is_authenticated %}
+                    <div class="restaurant-buttons">
+                        {% if is_add_review %}
+                        {% else %}
+                            <div class="button"><a href="{% url 'add_review' restaurant.name %}">Write a review</a></div>
+                            {% if is_craved %}
+                                <div class="button crave" onclick="add_to_cravings(this, '{{ request.user.username }}', '{{ restaurant.name }}')" style="display: none;"><a href="#">Add to Cravings</a></div>
+                                <div class="button uncrave" onclick="remove_from_cravings(this, '{{ request.user.username }}', '{{ restaurant.name }}')"><a href="#">Remove from Cravings</a></div>
+                            {% else %}
+                                <div class="button crave" onclick="add_to_cravings(this, '{{ request.user.username }}', '{{ restaurant.name }}')"><a href="#">Add to Cravings</a></div>
+                                <div class="button uncrave" onclick="remove_from_cravings(this, '{{ request.user.username }}', '{{ restaurant.name }}')" style="display: none;"><a href="#">Remove from Cravings</a></div>
+                            {% endif %}
+                            <div>
+                                <ul class="top-level">
+                                    <li>
+                                        <a class="button" href="#">Add to Dinelist</a>
+                                        {% if is_craved %}
+                                            <ul class="second-level craved">
+                                        {% else %}
+                                            <ul class="second-level uncraved">
+                                        {% endif %}
+                                            {% for dinelist in user_dinelists %}
+                                                {% if forloop.first %}
+                                                    <li><div class="second-level-item top" onclick="add_to_dinelist('{{ restaurant.name }}', '{{ dinelist.name }}')">
+                                                        <a href="#">{{ dinelist.name }}</a>
+                                                    </div></li>
+                                                {% elif forloop.last %}
+                                                    <li><div class="second-level-item bottom" onclick="add_to_dinelist('{{ restaurant.name }}', '{{ dinelist.name }}')">
+                                                        <a href="#">{{ dinelist.name }}</a>
+                                                    </div></li>
+                                                {% else %}
+                                                    <li><div class="second-level-item" onclick="add_to_dinelist('{{ restaurant.name }}', '{{ dinelist.name }}')">
+                                                        <a href="#">{{ dinelist.name }}</a>
+                                                    </div></li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    {% if is_restaurant %}
+        <div class="restaurant-content">
+            <div>
+                <div><h3>Featured in</h3></div>
+                {% for dinelist in dinelists %}
+                    <h4>
+                        <a href="{% url 'subcategory' 'dinelist' dinelist.0 %}">{{ dinelist.0 }}</a>
+                        by 
+                        <a href="#">{{ dinelist.0.user }}</a>
+                    </h4>
+                    <div class="horizontal-scrollable">
+                        {% for restaurant in dinelist.1 %}
+                            <a href="{% url 'restaurant' restaurant.0.name %}">
+                                <div class="small-card restaurant-instance" onmouseover="highlight_small_card(this)" onmouseout="unhighlight_small_card(this)">
+                                    {{ restaurant.1|json_script:restaurant.0.clean_name }}
+                                    <div class="clean-name">{{ restaurant.0.clean_name }}</div>
+                                    <div class="card-content">
+                                        <div><h4>{{ restaurant.0.name }}</h4></div>
+                                        <div class="card-star-rating">
+                                            {% for i in '0123456789'|make_list %}
+                                                <span class="fa fa-star"></span>
+                                            {% endfor %}
+                                        </div>
+                                        <div class="hidden-stars">{{ restaurant.0.mean_rating }}</div>
+                                        <div>{{ restaurant.0.setting }} • {{ restaurant.0.cuisine }} • {{ restaurant.0.price_range }}</div>
+                                        <div class="hidden-image">{{ restaurant.0.image }}</div>
+                                    </div>
+                                    <div class="card-actions">
+                                        {% if user.is_authenticated %}
+                                            <ul class="top-level">
+                                                <li>
+                                                    <button><a href="#">&#8942</a></button>
+                                                    <ul class="second-level">
+                                                        <li><div class="second-level-item top">
+                                                            <a href="{% url 'add_review' restaurant.0.name %}">+ Review</a>
+                                                        </div></li>
+                                                        <li class="crave" onclick="add_to_cravings(this, '{{ request.user.username }}', '{{ restaurant.0.name }}')"><div class="second-level-item">
+                                                            <a href="#">+ Cravings</a>
+                                                        </div></li>
+                                                        <li class="uncrave" onclick="remove_from_cravings(this, '{{ request.user.username }}', '{{ restaurant.0.name }}')"><div class="second-level-item">
+                                                            <a href="#">- Cravings</a>
+                                                        </div></li>
+                                                        <li>
+                                                            <div class="second-level-item bottom">
+                                                                <a href="#">+ Dinelist</a>
+                                                            </div>
+                                                            <ul class="third-level">
+                                                                {% for dinelist in user_dinelists %}
+                                                                    {% if forloop.first %}
+                                                                        <li><div class="third-level-item top" onclick="add_to_dinelist('{{ restaurant.0.name }}', '{{ dinelist.name }}')">
+                                                                            <a href="#">{{ dinelist.name }}</a>
+                                                                        </div></li>
+                                                                    {% elif forloop.last %}
+                                                                        <li><div class="third-level-item bottom" onclick="add_to_dinelist('{{ restaurant.0.name }}', '{{ dinelist.name }}')">
+                                                                            <a href="#">{{ dinelist.name }}</a>
+                                                                        </div></li>
+                                                                    {% else %}
+                                                                        <li><div class="third-level-item" onclick="add_to_dinelist('{{ restaurant.0.name }}', '{{ dinelist.name }}')">
+                                                                            <a href="#">{{ dinelist.name }}</a>
+                                                                        </div></li>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        {% endif %}
+                                    </div>                                    
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div><br>
+                {% endfor %}
+                <h4><a href="{% url 'restaurant_dinelists' restaurant.name %}">See all dinelists featuring {{ restaurant.name }}</a></h4>
+            </div><br>
+            <div>
+                <div><h3>Reviews ({{ num_reviews }})</h3></div>
+                {% for review in reviews %}
+                    <div class="review">
+                        <div><h4><a href="#">{{ review.user }}</a></h4></div>
+                        <div class="review-star-rating">
+                            {% for i in '0123456789'|make_list %}
+                                <span class="fa fa-star"></span>
+                            {% endfor %}
+                        </div>
+                        <div class="hidden-stars" style="display: none">{{ review.rating }}</div>
+                        <div>Visited on {{ review.visited_timestamp }}</div>
+                        <div style="font-size: larger;">{{ review.comment}}</div>
+                    </div><br>
+                {% endfor %}
+                <h4><a href="{% url 'restaurant_reviews' restaurant.name %}">See all reviews for {{ restaurant.name }}</a></h4>
+            </div>
+        </div>
+    {% endif %}
+    {% if is_reviews %}
+        <div class="reviews-content">
+            <div><h3>Reviews ({{ num_reviews }})</h3></div>
+            {% for review in reviews %}
+                <div class="review">
+                    <div><h4><a href="#">{{ review.user }}</a></h4></div>
+                    <div class="review-star-rating">
+                        {% for i in '0123456789'|make_list %}
+                            <span class="fa fa-star"></span>
+                        {% endfor %}
+                    </div>
+                    <div class="hidden-stars" style="display: none">{{ review.rating }}</div>
+                    <div>Visited on {{ review.visited_timestamp }}</div>
+                    <div style="font-size: larger;">{{ review.comment}}</div>
+                </div><br>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if is_add_review %}
+        <div class="add-review-content">
+            <h3>Write a review for {{ restaurant.name }}</h3>
+            <div>
+                <form action="{% url 'add_review' restaurant.name %}" method="POST">
+                    {% csrf_token %}
+                    How would you rate your experience at {{ restaurant.name }}?<br>
+                    <div class="rating">
+                        <input id="star10" name="star" type="radio" value="10" class="radio-btn hide" />
+                        <label for="star10" >☆</label>
+                        <input id="star9" name="star" type="radio" value="9" class="radio-btn hide" />
+                        <label for="star9" >☆</label>
+                        <input id="star8" name="star" type="radio" value="8" class="radio-btn hide" />
+                        <label for="star8" >☆</label>
+                        <input id="star7" name="star" type="radio" value="7" class="radio-btn hide" />
+                        <label for="star7" >☆</label>
+                        <input id="star6" name="star" type="radio" value="6" class="radio-btn hide" />
+                        <label for="star6" >☆</label>
+                        <input id="star5" name="star" type="radio" value="5" class="radio-btn hide" />
+                        <label for="star5" >☆</label>
+                        <input id="star4" name="star" type="radio" value="4" class="radio-btn hide" />
+                        <label for="star4" >☆</label>
+                        <input id="star3" name="star" type="radio" value="3" class="radio-btn hide" />
+                        <label for="star3" >☆</label>
+                        <input id="star2" name="star" type="radio" value="2" class="radio-btn hide" />
+                        <label for="star2" >☆</label>
+                        <input id="star1" name="star" type="radio" value="1" class="radio-btn hide" />
+                        <label for="star1" >☆</label>
+                    </div>
+                    <label for="content">How would you describe your experience at {{ restaurant.name }}?</label><br>
+                    <textarea name="content" rows="5" style="width: 50%" required="required"></textarea><br>
+                    <label for="visit_date">When did you visit {{ restaurant.name }}?</label><br>
+                    <input type="date" name="visit_date"><br><br>
+                    <div class="restaurant-buttons"><button>Submit Review</button></div>
+                </form>
+            </div>                        
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block mobile-body %}
+    <div class="restaurant-header">
+        <div class="background">
+            {% for image in banner_images %}
+                <img src="{{ image.image_url }}" alt="">
+            {% endfor %}
+        </div>
+        <div class="foreground">
+            <div class="title">
+                <a href="{% url 'restaurant' restaurant.name %}">{{ restaurant.name }}</a>
+            </div>
+            <div class="restaurant-star-rating">
+                {% for i in '0123456789'|make_list %}
+                    <span class="fa fa-star"></span>
+                {% endfor %}
+            </div>
+            <div class="hidden-stars">{{ restaurant.mean_rating }}</div>
+            <div class="categories">
+                {{ restaurant.setting }} • {{ restaurant.cuisine }} • {{ restaurant.price_range }}
+            </div>
+            {% if is_review %}
+            {% else %}
+                {% if user.is_authenticated %}
+                    <div class="restaurant-buttons">
+                        {% if is_add_review %}
+                        {% else %}
+                            <div class="button"><a href="{% url 'add_review' restaurant.name %}">Write a review</a></div>
+                            {% if is_craved %}
+                                <div class="button crave" onclick="add_to_cravings(this, '{{ request.user.username }}', '{{ restaurant.name }}')" style="display: none;"><a href="#">Add to Cravings</a></div>
+                                <div class="button uncrave" onclick="remove_from_cravings(this, '{{ request.user.username }}', '{{ restaurant.name }}')"><a href="#">Remove from Cravings</a></div>
+                            {% else %}
+                                <div class="button crave" onclick="add_to_cravings(this, '{{ request.user.username }}', '{{ restaurant.name }}')"><a href="#">Add to Cravings</a></div>
+                                <div class="button uncrave" onclick="remove_from_cravings(this, '{{ request.user.username }}', '{{ restaurant.name }}')" style="display: none;"><a href="#">Remove from Cravings</a></div>
+                            {% endif %}
+                            <div>
+                                <ul class="top-level">
+                                    <li>
+                                        <a class="button" href="#">Add to Dinelist</a>
+                                        {% if is_craved %}
+                                            <ul class="second-level craved">
+                                        {% else %}
+                                            <ul class="second-level uncraved">
+                                        {% endif %}
+                                            {% for dinelist in user_dinelists %}
+                                                {% if forloop.first %}
+                                                    <li><div class="second-level-item top" onclick="add_to_dinelist('{{ restaurant.name }}', '{{ dinelist.name }}')">
+                                                        <a href="#">{{ dinelist.name }}</a>
+                                                    </div></li>
+                                                {% elif forloop.last %}
+                                                    <li><div class="second-level-item bottom" onclick="add_to_dinelist('{{ restaurant.name }}', '{{ dinelist.name }}')">
+                                                        <a href="#">{{ dinelist.name }}</a>
+                                                    </div></li>
+                                                {% else %}
+                                                    <li><div class="second-level-item" onclick="add_to_dinelist('{{ restaurant.name }}', '{{ dinelist.name }}')">
+                                                        <a href="#">{{ dinelist.name }}</a>
+                                                    </div></li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    {% if is_restaurant %}
+        <div class="restaurant-content">
+            <div>
+                <div><h3>Featured in</h3></div>
+                {% for dinelist in dinelists %}
+                    <h4>
+                        <a href="{% url 'subcategory' 'dinelist' dinelist.0 %}">{{ dinelist.0 }}</a>
+                        by 
+                        <a href="#">{{ dinelist.0.user }}</a>
+                    </h4>
+                    <div class="horizontal-scrollable">
+                        {% for restaurant in dinelist.1 %}
+                            <a href="{% url 'restaurant' restaurant.0.name %}">
+                                <div class="small-card restaurant-instance" onmouseover="highlight_small_card(this)" onmouseout="unhighlight_small_card(this)">
+                                    {{ restaurant.1|json_script:restaurant.0.clean_name }}
+                                    <div class="clean-name">{{ restaurant.0.clean_name }}</div>
+                                    <div class="card-content">
+                                        <div><h4>{{ restaurant.0.name }}</h4></div>
+                                        <div class="card-star-rating">
+                                            {% for i in '0123456789'|make_list %}
+                                                <span class="fa fa-star"></span>
+                                            {% endfor %}
+                                        </div>
+                                        <div class="hidden-stars">{{ restaurant.0.mean_rating }}</div>
+                                        <div>{{ restaurant.0.setting }} • {{ restaurant.0.cuisine }} • {{ restaurant.0.price_range }}</div>
+                                        <div class="hidden-image">{{ restaurant.0.image }}</div>
+                                    </div>
+                                    <div class="card-actions">
+                                        {% if user.is_authenticated %}
+                                            <ul class="top-level">
+                                                <li>
+                                                    <button><a href="#">&#8942</a></button>
+                                                    <ul class="second-level">
+                                                        <li><div class="second-level-item top">
+                                                            <a href="{% url 'add_review' restaurant.0.name %}">+ Review</a>
+                                                        </div></li>
+                                                        <li class="crave" onclick="add_to_cravings(this, '{{ request.user.username }}', '{{ restaurant.0.name }}')"><div class="second-level-item">
+                                                            <a href="#">+ Cravings</a>
+                                                        </div></li>
+                                                        <li class="uncrave" onclick="remove_from_cravings(this, '{{ request.user.username }}', '{{ restaurant.0.name }}')"><div class="second-level-item">
+                                                            <a href="#">- Cravings</a>
+                                                        </div></li>
+                                                        <li>
+                                                            <div class="second-level-item bottom">
+                                                                <a href="#">+ Dinelist</a>
+                                                            </div>
+                                                            <ul class="third-level">
+                                                                {% for dinelist in user_dinelists %}
+                                                                    {% if forloop.first %}
+                                                                        <li><div class="third-level-item top" onclick="add_to_dinelist('{{ restaurant.0.name }}', '{{ dinelist.name }}')">
+                                                                            <a href="#">{{ dinelist.name }}</a>
+                                                                        </div></li>
+                                                                    {% elif forloop.last %}
+                                                                        <li><div class="third-level-item bottom" onclick="add_to_dinelist('{{ restaurant.0.name }}', '{{ dinelist.name }}')">
+                                                                            <a href="#">{{ dinelist.name }}</a>
+                                                                        </div></li>
+                                                                    {% else %}
+                                                                        <li><div class="third-level-item" onclick="add_to_dinelist('{{ restaurant.0.name }}', '{{ dinelist.name }}')">
+                                                                            <a href="#">{{ dinelist.name }}</a>
+                                                                        </div></li>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        {% endif %}
+                                    </div>                                    
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div><br>
+                {% endfor %}
+                <h4><a href="{% url 'restaurant_dinelists' restaurant.name %}">See all dinelists featuring {{ restaurant.name }}</a></h4>
+            </div><br>
+            <div class="text-wrap">
+                <div><h3>Reviews ({{ num_reviews }})</h3></div>
+                {% for review in reviews %}
+                    <div class="review">
+                        <div><h4><a href="#">{{ review.user }}</a></h4></div>
+                        <div class="review-star-rating">
+                            {% for i in '0123456789'|make_list %}
+                                <span class="fa fa-star"></span>
+                            {% endfor %}
+                        </div>
+                        <div class="hidden-stars" style="display: none">{{ review.rating }}</div>
+                        <div>Visited on {{ review.visited_timestamp }}</div>
+                        <div style="font-size: larger;">{{ review.comment}}</div>
+                    </div><br>
+                {% endfor %}
+                <h4><a href="{% url 'restaurant_reviews' restaurant.name %}">See all reviews for {{ restaurant.name }}</a></h4>
+            </div>
+        </div>
+    {% endif %}
+    {% if is_reviews %}
+        <div class="reviews-content text-wrap">
+            <div><h3>Reviews ({{ num_reviews }})</h3></div>
+            {% for review in reviews %}
+                <div class="review">
+                    <div><h4><a href="#">{{ review.user }}</a></h4></div>
+                    <div class="review-star-rating">
+                        {% for i in '0123456789'|make_list %}
+                            <span class="fa fa-star"></span>
+                        {% endfor %}
+                    </div>
+                    <div class="hidden-stars" style="display: none">{{ review.rating }}</div>
+                    <div>Visited on {{ review.visited_timestamp }}</div>
+                    <div style="font-size: larger;">{{ review.comment}}</div>
+                </div><br>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if is_add_review %}
+        <div class="add-review-content">
+            <h3>Write a review for {{ restaurant.name }}</h3>
+            <div>
+                <form action="{% url 'add_review' restaurant.name %}" method="POST">
+                    {% csrf_token %}
+                    How would you rate your experience at {{ restaurant.name }}?<br>
+                    <div class="rating">
+                        <input id="star10" name="star" type="radio" value="10" class="radio-btn hide" />
+                        <label for="star10" >☆</label>
+                        <input id="star9" name="star" type="radio" value="9" class="radio-btn hide" />
+                        <label for="star9" >☆</label>
+                        <input id="star8" name="star" type="radio" value="8" class="radio-btn hide" />
+                        <label for="star8" >☆</label>
+                        <input id="star7" name="star" type="radio" value="7" class="radio-btn hide" />
+                        <label for="star7" >☆</label>
+                        <input id="star6" name="star" type="radio" value="6" class="radio-btn hide" />
+                        <label for="star6" >☆</label>
+                        <input id="star5" name="star" type="radio" value="5" class="radio-btn hide" />
+                        <label for="star5" >☆</label>
+                        <input id="star4" name="star" type="radio" value="4" class="radio-btn hide" />
+                        <label for="star4" >☆</label>
+                        <input id="star3" name="star" type="radio" value="3" class="radio-btn hide" />
+                        <label for="star3" >☆</label>
+                        <input id="star2" name="star" type="radio" value="2" class="radio-btn hide" />
+                        <label for="star2" >☆</label>
+                        <input id="star1" name="star" type="radio" value="1" class="radio-btn hide" />
+                        <label for="star1" >☆</label>
+                    </div>
+                    <label for="content">How would you describe your experience at {{ restaurant.name }}?</label><br>
+                    <textarea name="content" rows="5" style="width: 50%" required="required"></textarea><br>
+                    <label for="visit_date">When did you visit {{ restaurant.name }}?</label><br>
+                    <input type="date" name="visit_date"><br><br>
+                    <div class="restaurant-buttons"><button>Submit Review</button></div>
+                </form>
+            </div>                        
+        </div>
+    {% endif %}
+{% endblock %}
